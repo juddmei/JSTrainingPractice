@@ -369,6 +369,72 @@
 				];    
 	log(expf(nae)); //5
 
+	//write a function addg that adds from many invocations until it sees an empty invocation
+	function addg(arg) {
+		function more(next) {
+			if (next === undefined) {
+				return arg;  
+			}  
+			arg += next;
+			return more; 
+		}
+		if (arg !== undefined) {
+			return more;
+		}
+	}
+	log(addg());
+	log(addg(2)());
+	log(addg(2)(7)());
+	log(addg(3)(4)(0)());
+	log(addg(1)(2)(4)(8)());
+	
+	//Write a function liftg that will take a binary function and apply it to many invocations.
+	function liftg(func){
+		return function(first){
+			if(first === undefined){
+				return first;
+			}
+			return function more(next){
+				if(next === undefined){
+					return first;
+				}
+				first = func(first, next);
+				return more;
+			};
+		}
+		
+	}
+	log(liftg(mul)());        // undefined
+	log(liftg(mul)(3)());           // 3
+	log(liftg(mul)(3)(4)(0)());     // 0
+	log(liftg(mul)(1)(2)(4)(8)());  // 64
+
+	//write a func arrayg that will build an array from many invocations
+	function arrayg(first) {
+		var array = [];
+		function more(next) {
+			if (next === undefined) {
+				return array;  
+			}  
+			array.push(next);
+			return more; 
+		}
+		return more(first);
+	}
+
+	log("[" + arrayg() + "]"); //[]
+	log("[" + arrayg(3)() + "]"); //[3]
+	log("[" + arrayg(3)(4)(5)() + "]"); //[3,4,5]
+	
+	//make a func continuize that takes a unary function and returns a function that take a callback and an arg
+	function continuize(func){
+		return function(func2, arg){
+			return func2(func(arg));
+		};
+	}
+	//sqrtc = continuize(Math.sqrt);
+	//sqrtc(alert, 81);
+	
 </script>
 </pre>
 </body>
